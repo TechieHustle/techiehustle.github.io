@@ -1,1 +1,1 @@
-This is a repository to host techiehustle.com website.
+This is a repo to host techiehustle.com website.
