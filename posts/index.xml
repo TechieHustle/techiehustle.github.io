@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>All Posts - TechieHustle</title>
+        <link>https://techiehustle.com/posts/</link>
+        <description>All Posts | TechieHustle</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 27 Sep 2021 00:13:33 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>First_post</title>
+    <link>https://techiehustle.com/posts/first_post/</link>
+    <pubDate>Mon, 27 Sep 2021 00:13:33 &#43;0530</pubDate>
+    <author>Author</author>
+    <guid>https://techiehustle.com/posts/first_post/</guid>
+    <description><![CDATA[]]></description>
+</item></channel>
+</rss>
