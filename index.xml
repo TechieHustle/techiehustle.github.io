@@ -11,13 +11,6 @@
     <pubDate>Mon, 27 Sep 2021 13:48:07 &#43;0530</pubDate>
     <author>Author</author>
     <guid>https://techiehustle.com/posts/web_monitor/</guid>
-    <description><![CDATA[Prologue:Monitoring our website for any downtime has always been crucial and it&rsquo;s even more important to get a notification of such issues for prompt remediation and log such issues]]></description>
-</item><item>
-    <title>First_post</title>
-    <link>https://techiehustle.com/posts/first_post/</link>
-    <pubDate>Mon, 27 Sep 2021 00:13:33 &#43;0530</pubDate>
-    <author>Author</author>
-    <guid>https://techiehustle.com/posts/first_post/</guid>
-    <description><![CDATA[]]></description>
+    <description><![CDATA[Monitoring website and notifying downtime using cron job.]]></description>
 </item></channel>
 </rss>
