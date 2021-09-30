@@ -26,7 +26,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/techiehustle.com\/posts\/logrouting\/"
-        },"genre": "posts","wordCount":  814 ,
+        },"genre": "posts","wordCount":  815 ,
         "url": "https:\/\/techiehustle.com\/posts\/logrouting\/","datePublished": "2021-07-31T13:59:39+05:30","dateModified": "2021-07-31T13:59:39+05:30","description": "This article delves into detailed procedure of sending different logs from AWS ECS Fargate containers to different destinations using AWSFirelens container as side car."
     }
     </script></head>
@@ -136,7 +136,7 @@
                         <h1 class="single-title flipInX">Log Routing in ECS Fargate Tasks</h1><div class="post-meta summary-post-meta"><span class="post-meta-date meta-item">
                                 <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-07-31">2021-07-31</time>
                             </span><span class="post-meta-words meta-item">
-                                <span class="svg-icon icon-pencil"></span>814 words
+                                <span class="svg-icon icon-pencil"></span>815 words
                             </span>
                             <span class="post-meta-reading meta-item">
                                 <span class="svg-icon icon-stopwatch"></span>4 minutes
@@ -224,8 +224,10 @@ b) Store the file in the fluent-bit container image — which, in essence, is cu
 </span><span class="w">    </span><span class="l">log_group_name      nginx-error-logs</span><span class="w">
 </span><span class="w">    </span><span class="l">log_stream_prefix   error-logs</span><span class="w">
 </span><span class="w">    </span><span class="l">auto_create_group   true</span><span class="w">
-</span></code></pre></div><p><strong>Quick Notes</strong> about the above configuration file:</p>
-<p>The above configuration uses input [2] and output [3] fluent-bit plug-ins. The important keys here are the “Tag” in input and “Match” in output. Fluent-bit tags the Tag (“access” &amp; “error” in this case) to the respective input plug-in logs. So, logs coming from access.log will be tagged with “access” and those from error.log will be tagged with “error” as used in the two input plug-ins.To route the logs to different destinations, “Match” key is used. A further reading on this can be done at official fluent-bit documentation [4].</p>
+</span></code></pre></div><blockquote>
+<p><strong>Quick Notes about the above configuration file</strong>  <br>
+The above configuration uses input [2] and output [3] fluent-bit plug-ins. The important keys here are the “Tag” in input and “Match” in output. Fluent-bit tags the Tag (“access” &amp; “error” in this case) to the respective input plug-in logs. So, logs coming from access.log will be tagged with “access” and those from error.log will be tagged with “error” as used in the two input plug-ins.To route the logs to different destinations, “Match” key is used. A further reading on this can be done at official fluent-bit documentation [4].</p>
+</blockquote>
 <p>b) Build the custom fluent-bit docker image with following Dockerfile on local/EC2 instance with Docker:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="l">FROM amazon/aws-for-fluent-bit:latest</span><span class="w">
 </span><span class="w"></span><span class="l">COPY fluentbit.conf .</span><span class="w">
