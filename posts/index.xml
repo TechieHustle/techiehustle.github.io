@@ -3,7 +3,14 @@
         <title>All Posts - TechieHustle</title>
         <link>https://techiehustle.com/posts/</link>
         <description>All Posts | TechieHustle</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 27 Sep 2021 13:48:07 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 30 Sep 2021 13:59:39 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Log Routing in ECS Fargate Tasks</title>
+    <link>https://techiehustle.com/posts/logrouting/</link>
+    <pubDate>Thu, 30 Sep 2021 13:59:39 &#43;0530</pubDate>
+    <author>Author</author>
+    <guid>https://techiehustle.com/posts/logrouting/</guid>
+    <description><![CDATA[This article delves into detailed procedure of sending different logs from AWS ECS Fargate containers to different destinations using AWSFirelens container as side car.]]></description>
+</item><item>
     <title>Website Monitoring</title>
     <link>https://techiehustle.com/posts/web_monitor/</link>
     <pubDate>Mon, 27 Sep 2021 13:48:07 &#43;0530</pubDate>
