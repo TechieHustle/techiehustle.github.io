@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Parallel Processing to Reduce Processing Time | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="Parallel Processing to Reduce Processing Time"/>
+<meta name="twitter:description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples."/><meta name="Description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples."><meta property="og:title" content="Parallel Processing to Reduce Processing Time" />
+<meta property="og:description" content="Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://techiehustle.com/posts/parallelprocessing/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-23T22:03:58+05:30" />
+<meta property="article:modified_time" content="2021-08-23T22:03:58+05:30" />
+
+<meta name="application-name" content="TechieHustle">
+<meta name="apple-mobile-web-app-title" content="TechieHustle"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://techiehustle.com/posts/parallelprocessing/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Parallel Processing to Reduce Processing Time",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/techiehustle.com\/posts\/parallelprocessing\/"
+        },"genre": "posts","wordCount":  1008 ,
+        "url": "https:\/\/techiehustle.com\/posts\/parallelprocessing\/","datePublished": "2021-08-23T22:03:58+05:30","dateModified": "2021-08-23T22:03:58+05:30","description": "Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="TechieHustle" class="header-logo logo-svg">TechieHustle</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="TechieHustle" class="header-logo">TechieHustle</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            Cancel
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-classic"><div class="toc" id="toc-auto">
+            <div class="toc-title">Contents</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home </a></li><li>Parallel Processing to Reduce Processing Time</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">Parallel Processing to Reduce Processing Time</h1><div class="post-meta summary-post-meta"><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-08-23">2021-08-23</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>1008 words
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>5 minutes
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>Contents</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue</a></li>
+        <li><a href="#number-of-processors-on-a-machine">Number of processors on a Machine</a></li>
+        <li><a href="#getting-hands-dirty">Getting hands dirty</a></li>
+        <li><a href="#sum-without-parallelization">Sum without Parallelization</a></li>
+        <li><a href="#sum-with-parallelization">Sum with Parallelization</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+                    </div><h3 id="prologue" class="headerLink"><a href="#prologue" class="header-mark"></a>Prologue</h3><p>Parallel processing is a computation method in which a large task is broken down into several independent, smaller and usually similar tasks running simultaneously on different processors in the same server which is running the Python script.</p>
+<p>This can significantly reduce the execution time of a program with a very large data set. We are going to have a detailed look into the parallel processing concepts, relevant python methods with examples.</p>
+<p><strong><a href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" target="_blank" rel="noopener noreffer">multiprocessing</a> module in Python</strong></p>
+<p>In this article, we are going to use <a href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" target="_blank" rel="noopener noreffer">multiprocessing</a> module. It launches subprocesses instead of threads and have independent memory space. Hence, the subprocesses can be launched on different physical processors (also called as CPU cores, we will be using CPU core and processor interchangeably throughout this article) on a machine, both Unix and Windows.</p>
+<p>Parallel processing can only be exploited well to decrease the execution time if the machine running the script has more than one processors. It is noteworthy that using subprocesses brings in its own overhead. And creating subprocesses on a single processor machine actually increases the total execution time compared to sans subprocesses execution.</p>
+<h3 id="number-of-processors-on-a-machine" class="headerLink"><a href="#number-of-processors-on-a-machine" class="header-mark"></a>Number of processors on a Machine</h3><p>Naturally, the follow-up question comes: How do I find the number of processors on my machine?</p>
+<p>The answer will vary on the machine type under concern. We are discussing each type in this section.</p>
+<ul>
+<li>Linux Machines: Terminal can be used to run nproc utility which will return the CPU core count. Detailed information about each core can be found by firing command cat /proc/cpuinfo in terminal.</li>
+<li>Apple Mac: In this case, the CPU cores can be found in System Report. Navigate as:
+Apple Icon Menu &gt; About This Mac &gt; System Report &gt; Hardware. The number of cores can be found against “Total Number of Cores”</li>
+<li>Windows Machine: There are multiple ways of finding CPU core count in Windows. We are discussing two major ways.
+<ul>
+<li>Task manager: Task manager &gt; Performance &gt; The number of cores can be found against the “Cores” option below the performance graph.</li>
+<li>Note that if Windows machine is running as a server in cloud or a virtual machine, then the cores should be found against “Virtual processors”.</li>
+</ul>
+</li>
+<li>Any machine with python installed: <code>multiprocessing</code> module provides a method <a href="https://docs.python.org/3/library/os.html#os.cpu_count" target="_blank" rel="noopener noreffer"><code>microprocessing.cpu_count()</code></a> to return the CPU processor count. So the following command can be used in a terminal <code>python -c 'import multiprocessing as mp; print(mp.cpu_count())'</code></li>
+</ul>
+<h3 id="getting-hands-dirty" class="headerLink"><a href="#getting-hands-dirty" class="header-mark"></a>Getting hands dirty</h3><p>Enough of talking, now it’s time to get our hands dirty with examples.</p>
+<p>As discussed earlier we are going to use <code>multiprocessing</code> module. We will leverage the <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" target="_blank" rel="noopener noreffer">Pool</a> object to create parallel process. The Pool object is used to create a pool of worker processes which can be assigned jobs. The maximum number of worker processes that can be run simultaneously on different cores would be total available cores available on the machine.</p>
+<p>The <a href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool" target="_blank" rel="noopener noreffer">Pool</a> object has <em>processes</em> as an argument which is essentially the number of worker processes to use. If no value is assigned, it will default to the total number of available cores on the machine.</p>
+<p>Creating parallel processes: Following shows a basic example of creating multiple processes using <code>Pool.map()</code> to find square of numbers.</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">def</span> <span class="nf">squareCal</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">current_process</span><span class="p">())</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&#34;Process ID: &#34;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&#34;This string is for intermixing the outputs.&#34;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Processor count: &#34;</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+    
+    <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">squareCal</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]))</span>
+</code></pre></div><p>Note that in the above example, we have not provided any value in <code>mp.Pool()</code>, so it will default to 4 worker processes pool, as the machine used in example has 4 CPU cores. And the p.map() method assigns the jobs to the worker processes.</p>
+<p>In the output of above code, the process ID and last string in each callback function (squareCal()) of each worker are not printed sequentially. The reason being workers from different CPU cores are using the I/O stream which is mixing the outputs.</p>
+<p>
+
+
+
+    
+<img loading="lazy" decoding="async"
+         class="render-image"
+         src="/img/MultiProcesses.png"
+         alt="MultiProcesses"
+         title="MultiProcesses.png"
+    /></p>
+<p>So, if we use a single worker process (mp.Pool(1)), in that case, each execution of the above snippet will result in perfect ordered output, as only one worker process can use the I/O stream.</p>
+<p>Now, let’s take an example of finding sum of consecutive integers from 0 to n-1. We need to keep this in consideration that the sum has to be found for a very large value of n, so that the parallelization compensates the small overhead due to parallelization. If n is a small value, it would take lesser time to run it on a single processor as it will avoid the overhead.</p>
+<p>In the following example, we are taking a very large value of n (10⁹).</p>
+<h3 id="sum-without-parallelization" class="headerLink"><a href="#sum-without-parallelization" class="header-mark"></a>Sum without Parallelization</h3><div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Processor count: &#34;</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+
+    <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000000</span><span class="p">:</span>
+        <span class="nb">sum</span> <span class="o">=</span> <span class="nb">sum</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Sum without parallel processing: &#34;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Time Elapsed without parallel processing: &#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">startTime</span><span class="p">))</span>
+</code></pre></div><p>The above code takes 133+ seconds to find the sum:</p>
+<p>
+
+
+
+    
+<img loading="lazy" decoding="async"
+         class="render-image"
+         src="/img/SumSignleProcessing.png"
+         alt="SingleProcessorSum"
+         title="SumSignleProcessing.png"
+    /></p>
+<h3 id="sum-with-parallelization" class="headerLink"><a href="#sum-with-parallelization" class="header-mark"></a>Sum with Parallelization</h3><p>The following snippet uses all the four cores from machine to find the sum.</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">findSum</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">250000000</span><span class="p">):</span>
+        <span class="nb">sum</span> <span class="o">=</span> <span class="nb">sum</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">sum</span>
+    
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Processor count: &#34;</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+
+    <span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="n">sum1</span><span class="p">,</span> <span class="n">sum2</span><span class="p">,</span> <span class="n">sum3</span><span class="p">,</span> <span class="n">sum4</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">findSum</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">250000000</span><span class="p">,</span><span class="mi">500000000</span><span class="p">,</span><span class="mi">750000000</span><span class="p">])</span>
+    <span class="nb">sum</span> <span class="o">=</span> <span class="n">sum1</span> <span class="o">+</span> <span class="n">sum2</span> <span class="o">+</span> <span class="n">sum3</span> <span class="o">+</span> <span class="n">sum4</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Sum with parallel processing: &#34;</span><span class="p">,</span><span class="nb">sum</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Time Elapsed with parallel processing: &#34;</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">startTime</span><span class="p">))</span>
+</code></pre></div><p>The above code with parallelization took little over 56 seconds:</p>
+<p>
+
+
+
+    
+<img loading="lazy" decoding="async"
+         class="render-image"
+         src="/img/SumMultiprocessor.png"
+         alt="MultiProcessorSum"
+         title="SumMultiprocessor.png"
+    /></p>
+<h3 id="conclusion" class="headerLink"><a href="#conclusion" class="header-mark"></a>Conclusion</h3><p>The test results clearly show that with parallel processing, it’s taking little over lesser than 56 seconds which is lesser than half the time it takes to find the sum without parallelization (133 seconds). And the difference grows even larger as we go for larger computations.</p>
+<p>So, if you have large data sets which can be computed independently and multicore CPU on machine, parallel processing will be a good idea to decrease the execution time.</p></div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://techiehustle.com/posts/parallelprocessing/" data-title="Parallel Processing to Reduce Processing Time"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://techiehustle.com/posts/parallelprocessing/"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://techiehustle.com/posts/parallelprocessing/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-whatsapp" href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://techiehustle.com/posts/parallelprocessing/" data-title="Parallel Processing to Reduce Processing Time" data-web><span class="svg-social-icon icon-whatsapp"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-reddit" href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://techiehustle.com/posts/parallelprocessing/"><span class="svg-social-icon icon-reddit"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-skype" href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://techiehustle.com/posts/parallelprocessing/" data-title="Parallel Processing to Reduce Processing Time"><span class="svg-social-icon icon-skype"></span></a>
+    </div></div>
+
+
+
+
+
+
+</div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    </div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.88.1">Hugo</a> | Theme - <a href="https://ublogger.netlify.app/?utm_source=https://techiehustle.com/&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2021</span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30}};</script><script src="/js/theme.min.js"></script></body>
+</html>
