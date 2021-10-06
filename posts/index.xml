@@ -3,26 +3,33 @@
         <title>All Posts - TechieHustle</title>
         <link>https://techiehustle.com/posts/</link>
         <description>All Posts | TechieHustle</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 23 Aug 2021 22:03:58 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 23 Sep 2021 22:03:58 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
     <title>Parallel Processing to Reduce Processing Time</title>
     <link>https://techiehustle.com/posts/parallelprocessing/</link>
-    <pubDate>Mon, 23 Aug 2021 22:03:58 &#43;0530</pubDate>
+    <pubDate>Thu, 23 Sep 2021 22:03:58 &#43;0530</pubDate>
     <author>Author</author>
     <guid>https://techiehustle.com/posts/parallelprocessing/</guid>
     <description><![CDATA[Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples.]]></description>
 </item><item>
     <title>Log Routing in ECS Fargate Tasks</title>
     <link>https://techiehustle.com/posts/logrouting/</link>
-    <pubDate>Sat, 31 Jul 2021 13:59:39 &#43;0530</pubDate>
+    <pubDate>Tue, 31 Aug 2021 13:59:39 &#43;0530</pubDate>
     <author>Author</author>
     <guid>https://techiehustle.com/posts/logrouting/</guid>
     <description><![CDATA[This article delves into detailed procedure of sending different logs from AWS ECS Fargate containers to different destinations using AWSFirelens container as side car.]]></description>
 </item><item>
     <title>Website Monitoring</title>
     <link>https://techiehustle.com/posts/web_monitor/</link>
-    <pubDate>Tue, 20 Jul 2021 13:48:07 &#43;0530</pubDate>
+    <pubDate>Fri, 06 Aug 2021 13:48:07 &#43;0530</pubDate>
     <author>Author</author>
     <guid>https://techiehustle.com/posts/web_monitor/</guid>
-    <description><![CDATA[Monitoring website and notifying downtime using cron job.]]></description>
+    <description><![CDATA[Monitoring website and notifying the site admin about downtime using cron job.]]></description>
+</item><item>
+    <title>Tracking Failed ECS Tasks</title>
+    <link>https://techiehustle.com/posts/ecstasktracking/</link>
+    <pubDate>Sat, 08 May 2021 19:11:54 &#43;0530</pubDate>
+    <author>Author</author>
+    <guid>https://techiehustle.com/posts/ecstasktracking/</guid>
+    <description><![CDATA[Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis.]]></description>
 </item></channel>
 </rss>

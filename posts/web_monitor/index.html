@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Website Monitoring | </title><meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content=""/>
 <meta name="twitter:title" content="Website Monitoring"/>
-<meta name="twitter:description" content="Monitoring website and notifying downtime using cron job."/><meta name="Description" content="Monitoring website and notifying downtime using cron job."><meta property="og:title" content="Website Monitoring" />
-<meta property="og:description" content="Monitoring website and notifying downtime using cron job." />
+<meta name="twitter:description" content="Monitoring website and notifying the site admin about downtime using cron job."/><meta name="Description" content="Monitoring website and notifying the site admin about downtime using cron job."><meta property="og:title" content="Website Monitoring" />
+<meta property="og:description" content="Monitoring website and notifying the site admin about downtime using cron job." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://techiehustle.com/posts/web_monitor/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-07-20T13:48:07+05:30" />
-<meta property="article:modified_time" content="2021-07-20T13:48:07+05:30" />
+<meta property="article:published_time" content="2021-08-06T13:48:07+05:30" />
+<meta property="article:modified_time" content="2021-08-06T13:48:07+05:30" />
 
 <meta name="application-name" content="TechieHustle">
 <meta name="apple-mobile-web-app-title" content="TechieHustle"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
@@ -26,8 +26,8 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/techiehustle.com\/posts\/web_monitor\/"
-        },"genre": "posts","wordCount":  101 ,
-        "url": "https:\/\/techiehustle.com\/posts\/web_monitor\/","datePublished": "2021-07-20T13:48:07+05:30","dateModified": "2021-07-20T13:48:07+05:30","description": "Monitoring website and notifying downtime using cron job."
+        },"genre": "posts","wordCount":  915 ,
+        "url": "https:\/\/techiehustle.com\/posts\/web_monitor\/","datePublished": "2021-08-06T13:48:07+05:30","dateModified": "2021-08-06T13:48:07+05:30","description": "Monitoring website and notifying the site admin about downtime using cron job."
     }
     </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
@@ -134,12 +134,12 @@
     </ol>
 </nav>
                         <h1 class="single-title flipInX">Website Monitoring</h1><div class="post-meta summary-post-meta"><span class="post-meta-date meta-item">
-                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-07-20">2021-07-20</time>
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-08-06">2021-08-06</time>
                             </span><span class="post-meta-words meta-item">
-                                <span class="svg-icon icon-pencil"></span>101 words
+                                <span class="svg-icon icon-pencil"></span>915 words
                             </span>
                             <span class="post-meta-reading meta-item">
-                                <span class="svg-icon icon-stopwatch"></span>One minute
+                                <span class="svg-icon icon-stopwatch"></span>5 minutes
                             </span>
                         </div>
 
@@ -162,14 +162,149 @@
     <li>
       <ul>
         <li><a href="#prologue">Prologue:</a></li>
+        <li><a href="#checking-the-website">Checking the Website</a></li>
+        <li><a href="#notifying-website-admin-of-downtime">Notifying website admin of downtime</a></li>
+        <li><a href="#logging-for-future-root-cause-analysis">Logging for future Root Cause Analysis</a></li>
+        <li><a href="#tying-all-together">Tying all together</a></li>
+        <li><a href="#cron-job-to-invoke-the-script">Cron job to invoke the script</a></li>
       </ul>
     </li>
   </ul>
 </nav></div>
                     </div><h3 id="prologue" class="headerLink"><a href="#prologue" class="header-mark"></a>Prologue:</h3><p>Monitoring a website for any downtime has always been crucial and it&rsquo;s even more important to get a notification of such occurences for prompt remediation actions and log such issues to analyze and avoid them in future.</p>
-<p>This post discusses about actively monitoring a website availability by checking the website URL using <a href="https://docs.python.org/3.9/library/urllib.request.html#module-urllib.request" target="_blank" rel="noopener noreffer"><code>urllib.request</code></a> module in Python. Here, it will be proactively checking the website availability instead of actually capturing users interactions. The proactive monitoring of the website is called <a href="https://en.wikipedia.org/wiki/Synthetic_monitoring" target="_blank" rel="noopener noreffer">synthtic monitoring</a>.</p>
-<p>We will be using a cron job to execute a Python script checking website URL with a certain frequency.</p>
-<p><a href="https://docs.python.org/3/library/logging.html#logrecord-attributes" target="_blank" rel="noopener noreffer">https://docs.python.org/3/library/logging.html#logrecord-attributes</a></p></div><footer>
+<p>This post discusses about actively monitoring a website availability by sending requests to the website URL. We will be using <a href="https://docs.python.org/3.9/library/urllib.request.html#module-urllib.request" target="_blank" rel="noopener noreffer"><code>urllib.request</code></a> module to make the request in a Python script and the script will be invoked at regular intervals via cron job.</p>
+<p>The script will be proactively checking the website availability instead of actually capturing users interactions. The proactive monitoring of the website is called <a href="https://en.wikipedia.org/wiki/Synthetic_monitoring" target="_blank" rel="noopener noreffer">synthtic monitoring</a>. A frequencey of 10 minutes would be good enough for a site with moderate traffic. However, the frequency can be easily changed using the cron expression that we will be discussing in the upcoming sections.</p>
+<h3 id="checking-the-website" class="headerLink"><a href="#checking-the-website" class="header-mark"></a>Checking the Website</h3><p>Following is a basic code snippet which uses <a href="https://docs.python.org/3.9/library/urllib.request.html#urllib.request.urlopen" target="_blank" rel="noopener noreffer"><code>request.urlopen</code></a> method to check the website:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">urllib.request</span> <span class="k">as</span> <span class="nn">request</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://example.com&#39;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">responseCode</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not check the website due to error: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+</code></pre></div><h3 id="notifying-website-admin-of-downtime" class="headerLink"><a href="#notifying-website-admin-of-downtime" class="header-mark"></a>Notifying website admin of downtime</h3><p>After checking the website, we can extract the response code followed by sending a notification if the response code is 5xx - showing website server has issues. There can be numerous ways to notify the admin; for example you can leverage AWS services like <a href="https://docs.aws.amazon.com/ses/latest/dg/Welcome.html" target="_blank" rel="noopener noreffer">AWS SES</a> or <a href="https://docs.aws.amazon.com/sns/latest/dg/welcome.html" target="_blank" rel="noopener noreffer">AWS SNS</a> or other providers like <a href="https://onesignal.com/" target="_blank" rel="noopener noreffer">One Signal</a> and <a href="https://pushnami.com/" target="_blank" rel="noopener noreffer">Pushnami</a>. However, in this post, we are going to use a very basic <a href="https://docs.python.org/3/library/smtplib.html#module-smtplib" target="_blank" rel="noopener noreffer">smtplib</a> module in this post.</p>
+<p>The following snippet gives an idea of sending mail using <a href="https://docs.python.org/3/library/smtplib.html#module-smtplib" target="_blank" rel="noopener noreffer">smtplib</a> with <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP_SSL" target="_blank" rel="noopener noreffer"><code>SMTP_SSL</code></a> class.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">smtplib</span>
+
+<span class="k">def</span> <span class="nf">sendMail</span><span class="p">():</span>
+    <span class="n">emailId</span> <span class="o">=</span> <span class="s1">&#39;sender-mail-id&#39;</span>
+    <span class="n">emailPassword</span> <span class="o">=</span> <span class="s1">&#39;LoginPassword&#39;</span>
+
+    <span class="n">sentFrom</span> <span class="o">=</span> <span class="s2">&#34;Web Monitor&#34;</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;reciever1-emailId&#39;</span><span class="p">,</span> <span class="s1">&#39;reciever2-emailId&#39;</span><span class="p">]</span> 
+    <span class="n">subject</span> <span class="o">=</span> <span class="s1">&#39;A test mail&#39;</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;Website Monitoring demo&#39;</span>
+
+    <span class="n">emailText</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&#34;From: </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&#34;</span>
+        <span class="s2">&#34;To: </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&#34;</span>
+        <span class="s2">&#34;Subject: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&#34;</span>
+        <span class="s2">&#34;</span><span class="si">%s</span><span class="s2">&#34;</span>
+        <span class="o">%</span> <span class="p">(</span><span class="n">sentFrom</span><span class="p">,</span> <span class="s2">&#34;, &#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to</span><span class="p">),</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">))</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="c1">#Create your SMTP session</span>
+        <span class="n">smtp</span> <span class="o">=</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s1">&#39;smtp.gmail.com&#39;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> 
+
+        <span class="c1">#User Authentication</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">emailId</span><span class="p">,</span><span class="n">emailPassword</span><span class="p">)</span>
+        
+        <span class="c1">#Sending the Email</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">sentFrom</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">emailText</span><span class="p">)</span> 
+
+        <span class="c1">#Terminating the session </span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Email sent successfully!&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Failed to send Email due to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+</code></pre></div><blockquote>
+<p><strong>Extra Shots on Secured SMTP Connections</strong><br>
+In the above snippet, the SMTP connection is created with SSL, so it&rsquo;s encrypted from the begining. The <a href="https://docs.python.org/3/library/smtplib.html#module-smtplib" target="_blank" rel="noopener noreffer">smtplib</a> module provides another method <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls" target="_blank" rel="noopener noreffer"><code>SMTP.starttls</code></a>, but it first creates the conncetion using <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP" target="_blank" rel="noopener noreffer"><code>smtplib.SMTP</code></a> and uses <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP.starttls" target="_blank" rel="noopener noreffer"><code>SMTP.starttls</code></a> to apply SSL on the connection. So, <a href="https://docs.python.org/3/library/smtplib.html#smtplib.SMTP_SSL" target="_blank" rel="noopener noreffer"><code>SMTP_SSL</code></a> class is preferred for secured SMTP connections.</p>
+</blockquote>
+<h3 id="logging-for-future-root-cause-analysis" class="headerLink"><a href="#logging-for-future-root-cause-analysis" class="header-mark"></a>Logging for future Root Cause Analysis</h3><p>Notifying the website admins will help in getting back the site available faster, but it&rsquo;s important that we log such incidents so that a thorough investigation can be done later to find the root cause and avoid such issues in future.</p>
+<p>We will be using <a href="https://docs.python.org/3/library/logging.html" target="_blank" rel="noopener noreffer">logging</a> module which can be used to log the 5XX responses from the website. By default, the logging module prints the logging content on the console. However, we can specify a file using <a href="https://docs.python.org/3/library/logging.html#logging.basicConfig" target="_blank" rel="noopener noreffer">basicConfig</a> module which will be used for logging.</p>
+<p>Following snippet shows how to set the logging file. Here, the path of the logging will be relative to the script path.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">logging</span> 
+
+<span class="c1"># Setting logging configuration</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;pathToLogFile.log&#39;</span><span class="p">,</span> \
+    <span class="n">filemode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Logging at Information level.&#39;</span><span class="p">)</span>
+
+<span class="c1"># Lodding in the logfile: 2021-07-20 13:00:31,354 INFO Logging at Information level.</span>
+</code></pre></div><p>Logging tutorials can be found at <a href="https://docs.python.org/3/howto/logging.html#logging-basic-tutorial" target="_blank" rel="noopener noreffer">basic</a> and <a href="https://docs.python.org/3/howto/logging.html#logging-advanced-tutorial" target="_blank" rel="noopener noreffer">advanced</a> tutorials.</p>
+<h3 id="tying-all-together" class="headerLink"><a href="#tying-all-together" class="header-mark"></a>Tying all together</h3><p>Using all the above discussed sections, we can <a href="https://en.wikipedia.org/wiki/Synthetic_monitoring" target="_blank" rel="noopener noreffer">synthtic monitoring</a> of a website, notify website admin and log for issues' future analysis and I had tested it using following script.</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">logging</span> 
+<span class="kn">import</span> <span class="nn">urllib.request</span> <span class="k">as</span> <span class="nn">request</span>
+<span class="kn">import</span> <span class="nn">smtplib</span>
+
+<span class="c1"># Setting logging configuration</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;pathToLogFile.log&#39;</span><span class="p">,</span> \
+    <span class="n">filemode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">sendMail</span><span class="p">(</span><span class="n">responseCode</span><span class="p">):</span>
+    <span class="n">emailId</span> <span class="o">=</span> <span class="s1">&#39;sender emailId&#39;</span>
+    <span class="n">emailPassword</span> <span class="o">=</span> <span class="s1">&#39;sender email login password&#39;</span>
+
+    <span class="n">sentFrom</span> <span class="o">=</span> <span class="s2">&#34;Web Monitor&#34;</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;web-admin-email-id-group&#39;</span><span class="p">,</span> <span class="s1">&#39;operations-team-email-id-group&#39;</span><span class="p">]</span> 
+    <span class="n">subject</span> <span class="o">=</span> <span class="s1">&#39;WARNING! Website down!&#39;</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="s1">&#39;Website is down!! Response Code: &#39;</span><span class="p">,</span> <span class="n">responseCode</span>
+
+    <span class="n">emailText</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&#34;From: </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&#34;</span>
+        <span class="s2">&#34;To: </span><span class="si">%s</span><span class="se">\r\n</span><span class="s2">&#34;</span>
+        <span class="s2">&#34;Subject: </span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&#34;</span>
+        <span class="s2">&#34;</span><span class="si">%s</span><span class="s2">&#34;</span>
+        <span class="o">%</span> <span class="p">(</span><span class="n">sentFrom</span><span class="p">,</span> <span class="s2">&#34;, &#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to</span><span class="p">),</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">))</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Sending mail to the website admin and operations team.&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="c1">#Create your SMTP session</span>
+        <span class="n">smtp</span> <span class="o">=</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP_SSL</span><span class="p">(</span><span class="s1">&#39;smtp.gmail.com&#39;</span><span class="p">,</span> <span class="mi">465</span><span class="p">)</span> 
+
+        <span class="c1">#User Authentication</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">emailId</span><span class="p">,</span><span class="n">emailPassword</span><span class="p">)</span>
+        
+        <span class="c1">#Sending the Email</span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">sentFrom</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">emailText</span><span class="p">)</span> 
+
+        <span class="c1">#Terminating the session </span>
+        <span class="n">smtp</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span> 
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Email sent successfully!&#39;</span><span class="p">)</span> 
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Failed to send Email due to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+
+<span class="c1"># Check if the website is available</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://techiehustle.com&#39;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Reaching the website </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="n">responseCode</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">responseCode</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">501</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span><span class="p">]:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Website DOWN!!</span><span class="se">\n</span><span class="s1">Response Code received = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">responseCode</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Notifying website admin and Operations team.&#39;</span><span class="p">)</span>
+        <span class="n">sendMail</span><span class="p">(</span><span class="n">responseCode</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not check the website due to error: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+</code></pre></div><p><strong>Note:</strong> The above script logs and notifies only for the common server-side 5XX responses.</p>
+<h3 id="cron-job-to-invoke-the-script" class="headerLink"><a href="#cron-job-to-invoke-the-script" class="header-mark"></a>Cron job to invoke the script</h3><p>We have reached at the last step of creating cron job which will be triggered every 10 minutes. On Linux machines, make sure that the crond service is running using command <code>$ service crond status</code> and command <code>$ service crond start</code> can be used to run crond. If cron is not installed, it can be installed using:</p>
+<ul>
+<li>
+<p>CentOS/RHEL: <code>$ sudo yum install cronie</code></p>
+</li>
+<li>
+<p>Debian/Ubuntu: <code>$ sudo apt-get install cron</code></p>
+</li>
+</ul>
+<p>Then a cron job can be created using <code>crontab -e</code> command and following in the file.</p>
+<p><code>*/10 * * * * python3 /relativePathOfPythonScript/webMonitor.py</code></p>
+<p>The frequency of the cron job can be set by changing the cron expression in the above command. You can find cron expressions with the help of <a href="https://crontab.guru/#*/10_*_*_*_*" target="_blank" rel="noopener noreffer">this</a> site.</p>
+<p>In case of Windows machine, we can use <a href="https://docs.microsoft.com/en-us/powershell/module/psscheduledjob/register-scheduledjob?view=powershell-5.1" target="_blank" rel="noopener noreffer">Register-ScheduledJob</a> with <code>RunEvery</code> flag to specify the frequency.</p></div><footer>
                         <div class="post">
 
 

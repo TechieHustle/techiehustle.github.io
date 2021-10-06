@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>Tracking Failed ECS Tasks | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="Tracking Failed ECS Tasks"/>
+<meta name="twitter:description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis."/><meta name="Description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis."><meta property="og:title" content="Tracking Failed ECS Tasks" />
+<meta property="og:description" content="Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://techiehustle.com/posts/ecstasktracking/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-08T19:11:54+05:30" />
+<meta property="article:modified_time" content="2021-05-08T19:11:54+05:30" />
+
+<meta name="application-name" content="TechieHustle">
+<meta name="apple-mobile-web-app-title" content="TechieHustle"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://techiehustle.com/posts/ecstasktracking/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Tracking Failed ECS Tasks",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/techiehustle.com\/posts\/ecstasktracking\/"
+        },"genre": "posts","wordCount":  1178 ,
+        "url": "https:\/\/techiehustle.com\/posts\/ecstasktracking\/","datePublished": "2021-05-08T19:11:54+05:30","dateModified": "2021-05-08T19:11:54+05:30","description": "Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="TechieHustle" class="header-logo logo-svg">TechieHustle</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="TechieHustle" class="header-logo">TechieHustle</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            Cancel
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-classic"><div class="toc" id="toc-auto">
+            <div class="toc-title">Contents</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home </a></li><li>Tracking Failed ECS Tasks</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">Tracking Failed ECS Tasks</h1><div class="post-meta summary-post-meta"><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2021-05-08">2021-05-08</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>1178 words
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>6 minutes
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>Contents</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue</a></li>
+        <li><a href="#event-rules">Event Rules:</a></li>
+        <li><a href="#event-patterns">Event Patterns:</a></li>
+        <li><a href="#task-failed-to-start-issues">Task failed to start issues:</a></li>
+        <li><a href="#task-failed-due-application-issue">Task failed due application issue</a></li>
+        <li><a href="#task-failures-within-an-ecs-service">Task failures within an ECS service</a></li>
+        <li><a href="#targets">Targets</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+                    </div><h3 id="prologue" class="headerLink"><a href="#prologue" class="header-mark"></a>Prologue</h3><p>Many times we have ECS tasks which fail either while launching or later. In production environments, it becomes extremely crucial to keep a track of tasks failing. If we can find identify such failing tasks, we can perform Root Cause Analysis (RCA) and address many issues which can prevent such failures in future, making the production more resilient.</p>
+<p>Although, tasks running as part of an ECS service, are logged in service events, but not much detail is included in the events and in some cases the task stopped reasons too are not included. Also, the service events logs service specific task details and can log as many as 100 events, so it’s likely that older failed task details are not available. So it can be challenging to keep a track of such tasks, as ECS does not provide a direct console to check failed tasks, especially if the production environment has large number of tasks; and makes RCA &amp; issue addressal further tricky. In this post, we are going to circumvent this limitation.</p>
+<p>Fortunately, we have <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html" target="_blank" rel="noopener noreffer">Amazon EventBridge</a> service which can be useful to address this issue. Now, a detailed reading and working can be found in the official <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html" target="_blank" rel="noopener noreffer">Amazon EventBridge</a> documentation. However, succinctly put: Amazon EventBridge enables various AWS services to send events (with some payload) to the <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html" target="_blank" rel="noopener noreffer">EventBridge event buses</a>, EventBridge evaluates the event payloads and in-turn decides to trigger different target AWS services forwarding the payload. So, as the name suggests, it acts as a bridge between different AWS services, receiving events and triggering targets.</p>
+<p>Before we move further, if you new to EventBridge, I highly recommend to get familiar with EventBridge using <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-get-started.html#eb-gs-create-rule" target="_blank" rel="noopener noreffer">Getting Started guide</a> from official AWS documentation.</p>
+<h3 id="event-rules" class="headerLink"><a href="#event-rules" class="header-mark"></a>Event Rules:</h3><p>An event rule matches the incoming events with <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-patterns.html" target="_blank" rel="noopener noreffer">event pattern</a> and determines whether or not to trigger the targets based on the result if the event pattern matches or not with the events. <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_cwe_events.html" target="_blank" rel="noopener noreffer">ECS events</a>  are created in one of the three cases: container instance state change events, task state change events, and service action events. This post will be focusing primarily on task state events as the failures relate to the tasks use task state events.</p>
+<p>ECS task state creates events in any one of the cases when a task is started/sopped via an ECS service or independently using <code>RunTask</code>/<code>StartTask</code> or <code>StopTask</code> API call; task launch fails; container in the task changes state. In each of the cases of task state events, the event has a unique set of key-value pairs which can be used in an event pattern to identify tasks with issues with fine grain control on tasks belonging to a specific ECS cluster and/or ECS service within the cluster.</p>
+<h3 id="event-patterns" class="headerLink"><a href="#event-patterns" class="header-mark"></a>Event Patterns:</h3><p>This section henceforth, we are going through examples of different event patterns to capture task events with specific issues.</p>
+<p>Here is a sample ECS task event when container exited with exit code 127:</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;version&#34;</span><span class="p">:</span><span class="s2">&#34;0&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;id&#34;</span><span class="p">:</span><span class="s2">&#34;xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;detail-type&#34;</span><span class="p">:</span><span class="s2">&#34;ECS Task State Change&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;source&#34;</span><span class="p">:</span><span class="s2">&#34;aws.ecs&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;account&#34;</span><span class="p">:</span><span class="s2">&#34;xxxxxxxxxxxx&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;time&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:58:12Z&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;region&#34;</span><span class="p">:</span><span class="s2">&#34;us-east-1&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;resources&#34;</span><span class="p">:[</span><span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/default/xxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class="p">],</span>
+  <span class="nt">&#34;detail&#34;</span><span class="p">:{</span>
+    <span class="nt">&#34;clusterArn&#34;</span><span class="p">:</span><span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/default&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;connectivity&#34;</span><span class="p">:</span><span class="s2">&#34;CONNECTED&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;connectivityAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:57:37.852Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;containers&#34;</span><span class="p">:[{</span>
+      <span class="nt">&#34;containerArn&#34;</span><span class="p">:</span><span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:container/default/xxxxxxxxxxxxxxxxxxxxxxxx/xxxxxx-xx-xx-xxxxxx&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;exitCode&#34;</span><span class="p">:</span><span class="mi">127</span><span class="p">,</span>
+      <span class="nt">&#34;lastStatus&#34;</span><span class="p">:</span><span class="s2">&#34;STOPPED&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;Nginx-Container&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;image&#34;</span><span class="p">:</span><span class="s2">&#34;nginx&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;runtimeId&#34;</span><span class="p">:</span><span class="s2">&#34;xxxxxxxxxxxxxxxxxxxxxxxx-2065566309&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;taskArn&#34;</span><span class="p">:</span><span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/default/xxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;networkInterfaces&#34;</span><span class="p">:</span>
+        <span class="p">[{</span>
+          <span class="nt">&#34;attachmentId&#34;</span><span class="p">:</span><span class="s2">&#34;xxxxxx-xx-xx-xx-xxxxxx-xxxxxxxxx&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;privateIpv4Address&#34;</span><span class="p">:</span><span class="s2">&#34;172.31.78.62&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;ipv6Address&#34;</span><span class="p">:</span><span class="s2">&#34;xxxx:xxxx:xxx:fd00:84d4:xxx:xx:xxxx&#34;</span>
+        <span class="p">}],</span>
+      <span class="nt">&#34;cpu&#34;</span><span class="p">:</span><span class="s2">&#34;0&#34;</span>
+    <span class="p">}],</span>
+    <span class="nt">&#34;cpu&#34;</span><span class="p">:</span><span class="s2">&#34;256&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;createdAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:57:33.528Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;desiredStatus&#34;</span><span class="p">:</span><span class="s2">&#34;STOPPED&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;enableExecuteCommand&#34;</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&#34;ephemeralStorage&#34;</span><span class="p">:{</span><span class="nt">&#34;sizeInGiB&#34;</span><span class="p">:</span><span class="mi">20</span><span class="p">},</span>
+    <span class="nt">&#34;executionStoppedAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:58:02.463Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;group&#34;</span><span class="p">:</span><span class="s2">&#34;family:test-task-definition&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;launchType&#34;</span><span class="p">:</span><span class="s2">&#34;FARGATE&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;lastStatus&#34;</span><span class="p">:</span><span class="s2">&#34;DEPROVISIONING&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;memory&#34;</span><span class="p">:</span><span class="s2">&#34;512&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;overrides&#34;</span><span class="p">:{</span>
+      <span class="nt">&#34;containerOverrides&#34;</span><span class="p">:[{</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;Nginx-Container&#34;</span><span class="p">}]</span>
+    <span class="p">},</span>
+    <span class="nt">&#34;platformVersion&#34;</span><span class="p">:</span><span class="s2">&#34;1.4.0&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;pullStartedAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:57:47.724Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;pullStoppedAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:57:59.522Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;startedAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:58:02.494Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;stoppingAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:58:12.541Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;stoppedReason&#34;</span><span class="p">:</span><span class="s2">&#34;Essential container in task exited&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;stopCode&#34;</span><span class="p">:</span><span class="s2">&#34;EssentialContainerExited&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;taskArn&#34;</span><span class="p">:</span><span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/default/xxxxxxxxxxxxxxxxxxxxxxxx&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;taskDefinitionArn&#34;</span><span class="p">:</span><span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task-definition/test-task-definition:8&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;updatedAt&#34;</span><span class="p">:</span><span class="s2">&#34;2021-05-08T11:58:12.541Z&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;version&#34;</span><span class="p">:</span><span class="mi">4</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="task-failed-to-start-issues" class="headerLink"><a href="#task-failed-to-start-issues" class="header-mark"></a>Task failed to start issues:</h3><p>Such issues happen when the task fails to start. This usually happens when there is a problem in task configurations which can cause issues in launching the containers. For example, the task does not have permissions to pull the container image or secrets from secrets manager used in container environment variables; or has incorrect network configurations due to which image could not be pulled; or there is no host instance in cluster to accommodate the task. There are plethora of reasons which could lead to task start failure.</p>
+<p>Following event pattern can be used to capture such tasks which failed to start:</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;source&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;aws.ecs&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;detail-type&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;ECS Task State Change&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;detail&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;clusterArn&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/clusterName&#34;</span>
+    <span class="p">],</span>
+    <span class="nt">&#34;stopCode&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;TaskFailedToStart&#34;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="task-failed-due-application-issue" class="headerLink"><a href="#task-failed-due-application-issue" class="header-mark"></a>Task failed due application issue</h3><p>In this case, the task starts but the eventually stops due to some issue in the essential container application.</p>
+<p>Note: An ECS task can run as many as 10 containers as per the <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html#service-quotas-ecs" target="_blank" rel="noopener noreffer">ECS default quotas</a>. However, the task stops due to a stopping of a container only if the container is labeled as <a href="https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerDefinition.html" target="_blank" rel="noopener noreffer">Essential</a>, otherwise the task can be in running state even for a stopped non-essential container.</p>
+<p>If there is a container exits due to a command failure, it exits with a non-zero exit code and if the container is essential, it will stop the task as well. In such case, the event can be captured using following event pattern:</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;source&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;aws.ecs&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;detail-type&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;ECS Task State Change&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;detail&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;clusterArn&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/clusterName&#34;</span>
+    <span class="p">],</span>
+    <span class="nt">&#34;containers&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;exitCode&#34;</span><span class="p">:</span> <span class="p">[{</span>
+        <span class="nt">&#34;anything-but&#34;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="p">}]</span>
+    <span class="p">},</span>
+    <span class="nt">&#34;stopCode&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;EssentialContainerExited&#34;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p><strong>Note</strong>: The above pattern will be able to capture non-zero exit codes from essential containers in the task which belong to cluster bearing name “clusterName”. While using the pattern, use your cluster’s ARN.</p>
+<h3 id="task-failures-within-an-ecs-service" class="headerLink"><a href="#task-failures-within-an-ecs-service" class="header-mark"></a>Task failures within an ECS service</h3><p>This section delves into cornering tasks which fail within an ECS service. Here, it is worth noting that the event patterns we have discussed so far are applicable to the tasks of ECS service as well, as the tasks of an ECS service have same <code>stopCode</code> &amp; <code>exitCode</code>. However, as ECS services are logical isolation of microservices, it is worth sparing our time to discuss about tracking failing tasks with their service names.</p>
+<p>For service name specific event pattern, we can use all the above discussed event patterns with an additional key “group” in the event pattern. Following event pattern can be used by specifying the <code>clusterArn</code> and ECS service name in <code>service:&lt;your-service-name&gt;</code> (replace “<!-- raw HTML omitted -->” with ECS service name):</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;source&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;aws.ecs&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;detail-type&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;ECS Task State Change&#34;</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;detail&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;clusterArn&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;arn:aws:ecs:us-east-1:xxxxxxxxxxxx:cluster/clusterName&#34;</span>
+    <span class="p">],</span>
+    <span class="nt">&#34;group&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;service:&lt;your-service-name&gt;&#34;</span>
+    <span class="p">],</span>
+    <span class="nt">&#34;stopCode&#34;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;TaskFailedToStart&#34;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="targets" class="headerLink"><a href="#targets" class="header-mark"></a>Targets</h3><p>In essence, <a href="https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html" target="_blank" rel="noopener noreffer">targets</a> are AWS services/endpoints to which event payload is sent upon a successful event match with the event pattern. For each event rule, there can be a maximum of 5 targets. You can log the events for failing tasks for a later RCA, or use SNS topic to get an alert, say your email subscribed to the topic, or you can trigger a different service as fail-safe mechanism.</p>
+<h3 id="conclusion" class="headerLink"><a href="#conclusion" class="header-mark"></a>Conclusion</h3><p>At this point it’s easy to see that there can be different ways in which we can log and trace failing ECS tasks and it can make troubleshooting easier and systematic. A further exploration of events and events pattern is worth sweating. You can keep the event pattern so as to match with a wider range of events using lesser filter and try to find patterns for your use-cases. For example, in ECS, following pattern will capture all the events from ECS:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;source&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&#34;aws.ecs&#34;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div><p>The captured events can be used to contrive different patterns according to the need.</p></div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://techiehustle.com/posts/ecstasktracking/" data-title="Tracking Failed ECS Tasks"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://techiehustle.com/posts/ecstasktracking/"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://techiehustle.com/posts/ecstasktracking/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-whatsapp" href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://techiehustle.com/posts/ecstasktracking/" data-title="Tracking Failed ECS Tasks" data-web><span class="svg-social-icon icon-whatsapp"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-reddit" href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://techiehustle.com/posts/ecstasktracking/"><span class="svg-social-icon icon-reddit"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-skype" href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://techiehustle.com/posts/ecstasktracking/" data-title="Tracking Failed ECS Tasks"><span class="svg-social-icon icon-skype"></span></a>
+    </div></div>
+
+
+
+
+
+
+</div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    </div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.88.1">Hugo</a> | Theme - <a href="https://ublogger.netlify.app/?utm_source=https://techiehustle.com/&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2021</span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30}};</script><script src="/js/theme.min.js"></script></body>
+</html>
