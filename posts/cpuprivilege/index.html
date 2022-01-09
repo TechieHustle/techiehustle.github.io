@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noodp"/><title>CPUPrivilege | </title><meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content=""/>
+<meta name="twitter:title" content="CPUPrivilege"/>
+<meta name="twitter:description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor."/><meta name="Description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor."><meta property="og:title" content="CPUPrivilege" />
+<meta property="og:description" content="CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://techiehustle.com/posts/cpuprivilege/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-04T23:41:13+05:30" />
+<meta property="article:modified_time" content="2022-01-04T23:41:13+05:30" />
+
+<meta name="application-name" content="TechieHustle">
+<meta name="apple-mobile-web-app-title" content="TechieHustle"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+        <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://techiehustle.com/posts/cpuprivilege/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/lib/prismjs/prism.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CPUPrivilege",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/techiehustle.com\/posts\/cpuprivilege\/"
+        },"genre": "posts","wordCount":  780 ,
+        "url": "https:\/\/techiehustle.com\/posts\/cpuprivilege\/","datePublished": "2022-01-04T23:41:13+05:30","dateModified": "2022-01-04T23:41:13+05:30","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","description": "CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor."
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header>
+    <div class="desktop header" id="header-desktop">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="TechieHustle" class="header-logo logo-svg">TechieHustle</a>
+            </div>
+            <div class="menu">
+                <nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul class="menu-inner"><li>
+                            <a class="menu-item" href="/posts/"> Posts </a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/"> Tags </a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/"> Categories </a>
+                        </li><li>
+                            <a class="menu-item" href="https://github.com/upagge/ublogger" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a>
+                        </li></ul>
+                </nav><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <span class="svg-icon icon-search"></span>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <span class="svg-icon icon-cancel"></span>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <span class="svg-icon icon-loading"></span>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <span class="svg-icon icon-moon"></span>
+                </a>
+            </div>
+        </div>
+    </div><div class="mobile header" id="header-mobile">
+        <div class="header-container">
+            <div class="header-wrapper">
+                <div class="header-title">
+                    <a href="/" title="TechieHustle" class="header-logo">TechieHustle</a>
+                </div>
+                <div class="menu-toggle" id="menu-toggle-mobile">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                        <div class="search mobile" id="search-mobile">
+                            <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                            <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                                <span class="svg-icon icon-search"></span>
+                            </a>
+                            <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                                <span class="svg-icon icon-cancel"></span>
+                            </a>
+                            <span class="search-button search-loading" id="search-loading-mobile">
+                                <span class="svg-icon icon-loading"></span>
+                            </span>
+                        </div>
+                        <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                            Cancel
+                        </a>
+                    </div><nav>
+                    <h2 class="display-hidden">Основная навигация</h2>
+                    <ul><li>
+                            <a class="menu-item" href="/posts/" title="">Posts</a>
+                        </li><li>
+                            <a class="menu-item" href="/tags/" title="">Tags</a>
+                        </li><li>
+                            <a class="menu-item" href="/categories/" title="">Categories</a>
+                        </li><li>
+                            <a class="menu-item" href="https://github.com/upagge/ublogger" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a>
+                        </li></ul>
+                </nav>
+                <a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <span class="svg-icon icon-moon"></span>
+                </a></div>
+        </div>
+    </div><div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div></header><main class="main">
+<div class="container content-article page-toc theme-classic"><div class="toc" id="toc-auto">
+            <div class="toc-title">Contents</div>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div>
+
+    
+    
+    <article>
+    
+
+        <header class="header-post">
+
+            
+
+            
+            <div class="post-title">
+
+                    <div class="post-all-meta">
+                        <nav class="breadcrumbs">
+    <ol>
+        <li><a href="/">Home </a></li><li>CPUPrivilege</li>
+    </ol>
+</nav>
+                        <h1 class="single-title flipInX">CPUPrivilege</h1><div class="post-meta summary-post-meta"><span class="post-meta-date meta-item">
+                                <span class="svg-icon icon-clock"></span><time class="timeago" datetime="2022-01-04">2022-01-04</time>
+                            </span><span class="post-meta-words meta-item">
+                                <span class="svg-icon icon-pencil"></span>780 words
+                            </span>
+                            <span class="post-meta-reading meta-item">
+                                <span class="svg-icon icon-stopwatch"></span>4 minutes
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </header>
+
+        <div class="article-post toc-start">
+
+            <div class="content-block content-block-first content-block-position">
+
+                <div class="post single"><div class="details toc" id="toc-static"  data-kept="">
+                        <div class="details-summary toc-title">
+                            <span>Contents</span>
+                        </div>
+                        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#prologue">Prologue</a></li>
+        <li><a href="#inline-assembly-language-in-c">Inline Assembly language in C</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+                    </div><h3 id="prologue" class="headerLink"><a href="#prologue" class="header-mark"></a>Prologue</h3><p>It&rsquo;s a fundamental concept and design rule that all the CPU resources should not be accessible/programmable by any random process or function in a machine. This is crucial for data protection and avoiding functionality impairment and improving fault tolerance of a CPU. This protection is enforced by a mechanism called as <a href="https://www.geeksforgeeks.org/protection-ring/" target="_blank" rel="noopener noreffer">protection ring</a> with different level of access provided to different rings. More popularly though, the protection rings are referred as CPU privilege levels.</p>
+<p>At software level, there can be multiple privilege levels which can be created and enforced to be used with an application or process using the mechanisms like Discretionary Access Control (DAC) in standard Linux or Mandatory Access Control (MAC) in Security Enhanced Linux (<a href="https://wiki.centos.org/HowTos/SELinux" target="_blank" rel="noopener noreffer">SELinux</a>). However, at the processor (our discussion is around x86_64 processor) level, there are only two levels (also called modes): Supervisor (Kernel) mode (ring 0 in x86 documentation); and User mode(ring 3 in x86 documentation). The OS code runs in ring 0 in kernel mode has the highest level of privilege while all the applications and processes run in ring 3, user mode.</p>
+<blockquote>
+<p>NOTE: Originally, x86 processors have four rings (ring 0 through ring 3), as per the <a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html" target="_blank" rel="noopener noreffer">Intel® 64 and IA-32 Architectures Software Developer Manuals</a>. But most systems use only two of them. Ring 1 and 2 were intended to be used by device drivers, but modern Operating Systems run them in ring 0. Ring 1 and 2 are still used, for example type 2 hypervisors like VirtualBox and VMware Fusion put guest OS in ring 1.</p>
+</blockquote>
+<p>We will be testing privilege level of a code in C language which includes inline assembly language to see what registers it can read and write.</p>
+<h3 id="inline-assembly-language-in-c" class="headerLink"><a href="#inline-assembly-language-in-c" class="header-mark"></a>Inline Assembly language in C</h3><p>Inline assembly language can be embedded in a C code using the <a href="https://gcc.gnu.org/onlinedocs/gcc/Using-Assembly-Language-with-C.html" target="_blank" rel="noopener noreffer">asm</a> keyword. GNU assembler uses AT&amp;T Assembly syntax which can be referred quickly <a href="https://csiflabs.cs.ucdavis.edu/~ssdavis/50/att-syntax.htm" target="_blank" rel="noopener noreffer">here</a>.</p>
+<p>Few important sytatctial notes that will be used in this post:</p>
+<ul>
+<li>
+<p>Register names prefixed by a &lsquo;%&rsquo; sign, eg. %al,%bx, %ds, %cr0 etc. <code>mov	%ax, %bx</code> &gt; mov instruction moves the value from the 16-bit register AX to 16-bit register BX.</p>
+</li>
+<li>
+<p>Literal values prefixed by a &lsquo;$&rsquo; sign. <code>mov	$100, %bx</code> &gt; moves the value 100 into the register AX.</p>
+</li>
+<li>
+<p><code>mov	$A,	%al</code> &gt; moves the numerical value of the ascii A into the AL register.</p>
+</li>
+<li>
+<p>The <code>mov</code> instruction can be suffixed with (b, w, l, or q) indicating how many bytes are being copied (1, 2, 4, or 8 respectively).</p>
+</li>
+</ul>
+<p>Now, it&rsquo;s time to get our hands dirty with an actual code in C. We are going to start with an exteremely basic assembly embedded in C to copy a variable into another, increment, and print:</p>
+<div class="highlight line-numbers"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c">
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">src</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">dst</span><span class="p">;</span>
+
+    <span class="k">asm</span> <span class="p">(</span><span class="s">&#34;mov %0, %1</span><span class="se">\n\t</span><span class="s">&#34;</span>
+        <span class="s">&#34;add $1, %1&#34;</span>
+        <span class="o">:</span> <span class="s">&#34;=r&#34;</span> <span class="p">(</span><span class="n">dst</span><span class="p">)</span>
+        <span class="o">:</span> <span class="s">&#34;r&#34;</span> <span class="p">(</span><span class="n">src</span><span class="p">));</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>It will print &ldquo;10&rdquo; in the output.</p>
+<p>Let&rsquo;s try to access some registers on the processor.n</p>
+<pre tabindex="0"><code class="language-c{.line-numbers}" data-lang="c{.line-numbers}">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef unsigned long u64;
+
+static u64 getRcx(void)
+{
+    /** Note: [RAX] register in x86 processors contains a function return value, so we can query a register's value by moving its value into RAX.
+    * */
+    __asm__ __volatile__(
+            &quot;push %rcx\n\t&quot; 
+            &quot;movq $5, %rcx\n\t&quot; 
+            &quot;movq %rcx, %rax&quot;); 
+    __asm__ __volatile__(&quot;pop %rcx&quot;);
+}
+
+int main(void)
+{
+    printf(&quot;Inline assembly with register value:\n [RCX] = 0x%lx\n&quot;,  
+                getRcx());
+    exit(0);
+}
+</code></pre><p>It prints 0x5, as the expected output. So, the C program execution can read the values of RCS as well as RAX (well, program returned value is stored in RAX so it should be accessible).</p>
+<p>We will now try to play with control registers. Contorl registers perform fundamental operations like interrput control and addressing mode et al. A detailed reading on specific functions can be found <a href="https://en.wikipedia.org/wiki/Control_register#CR0" target="_blank" rel="noopener noreffer">here</a>. Here, we are going to try reading the CR0 control register. CR0 register has control flags which determines the basic processor opearations; toggling the bits enables/disables paging, cache and protected mode, among others.</p>
+<pre tabindex="0"><code class="language-c{.line-numbers}" data-lang="c{.line-numbers}">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef unsigned long u64;
+
+static u64 getRcx(void)
+{
+    __asm__ __volatile__(&quot;movq %cr0, %rax&quot;);
+}
+
+int main(void)
+{
+    printf(&quot;Inline assembly with register value:\n [RCX] = 0x%lx\n&quot;,  
+                getRcx());
+    exit(0);
+}
+</code></pre><p>Out of the above code execution:</p>
+<p><code>Segmentation fault (core dumped)</code></p>
+<p>Here, the application code - which is essentially at application level (user mode) — tried to access a control register. As we discussed earlier, control registers control fundamental functionalities of the processor - operating modes and states of the processor. A nasty application could easily impair the processor functionality. So, none of these registers can be accessed only in kernel mode of operation, which is OS. It now makes sense why need different privilege levels.</p></div><footer>
+                        <div class="post">
+
+
+<div class="post-share"><div class="share-link">
+        <a class="share-icon share-twitter" href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://techiehustle.com/posts/cpuprivilege/" data-title="CPUPrivilege"><span class="svg-social-icon icon-twitter"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-facebook" href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://techiehustle.com/posts/cpuprivilege/"><span class="svg-social-icon icon-facebook"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-linkedin" href="javascript:void(0);" title="Share on Linkedin" data-sharer="linkedin" data-url="https://techiehustle.com/posts/cpuprivilege/"><span class="svg-social-icon icon-linkedin"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-whatsapp" href="javascript:void(0);" title="Share on WhatsApp" data-sharer="whatsapp" data-url="https://techiehustle.com/posts/cpuprivilege/" data-title="CPUPrivilege" data-web><span class="svg-social-icon icon-whatsapp"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-reddit" href="javascript:void(0);" title="Share on Reddit" data-sharer="reddit" data-url="https://techiehustle.com/posts/cpuprivilege/"><span class="svg-social-icon icon-reddit"></span></a>
+    </div><div class="share-link">
+        <a class="share-icon share-skype" href="javascript:void(0);" title="Share on Skype" data-sharer="skype" data-url="https://techiehustle.com/posts/cpuprivilege/" data-title="CPUPrivilege"><span class="svg-social-icon icon-skype"></span></a>
+    </div></div>
+
+
+
+
+
+
+</div>
+                </footer></div>
+
+        <div id="toc-final"></div>
+        </div>
+
+    
+    </article>
+    </div>
+
+</main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.88.1">Hugo</a> | Theme - <a href="https://ublogger.netlify.app/?utm_source=https://techiehustle.com/&utm_medium=footer&utm_campaign=config&utm_term=2.0.1" target="_blank" title="uBlogger 2.0.1">uBlogger</a>
+                </div><div class="footer-line"><i class="svg-icon icon-copyright"></i><span>2021 - 2022</span></div>
+        </div>
+    </footer></div>
+
+        <aside id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="svg-icon icon-arrow-up"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="svg-icon icon-comments-fixed"></i>
+            </a>
+        </aside><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/prismjs/prism.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/auto-render.min.js"></script><script src="/lib/katex/copy-tex.min.js"></script><script src="/lib/katex/mhchem.min.js"></script><script>window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":10},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.en","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

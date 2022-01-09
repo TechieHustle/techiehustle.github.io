@@ -3,7 +3,14 @@
         <title>All Posts - TechieHustle</title>
         <link>https://techiehustle.com/posts/</link>
         <description>All Posts | TechieHustle</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 23 Sep 2021 22:03:58 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 04 Jan 2022 23:41:13 &#43;0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>CPUPrivilege</title>
+    <link>https://techiehustle.com/posts/cpuprivilege/</link>
+    <pubDate>Tue, 04 Jan 2022 23:41:13 &#43;0530</pubDate>
+    <author>Author</author>
+    <guid>https://techiehustle.com/posts/cpuprivilege/</guid>
+    <description><![CDATA[CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor.]]></description>
+</item><item>
     <title>Parallel Processing to Reduce Processing Time</title>
     <link>https://techiehustle.com/posts/parallelprocessing/</link>
     <pubDate>Thu, 23 Sep 2021 22:03:58 &#43;0530</pubDate>
