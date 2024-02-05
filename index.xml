@@ -1,44 +1,57 @@
-<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-    <channel>
-        <title>TechieHustle</title>
-        <link>https://techiehustle.com/</link>
-        <description>About uBlogger Theme</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 04 Jan 2022 23:41:13 &#43;0530</lastBuildDate>
-            <atom:link href="https://techiehustle.com/index.xml" rel="self" type="application/rss+xml" />
-        <item>
-    <title>CPUPrivilege</title>
-    <link>https://techiehustle.com/posts/cpuprivilege/</link>
-    <pubDate>Tue, 04 Jan 2022 23:41:13 &#43;0530</pubDate>
-    <author>Author</author>
-    <guid>https://techiehustle.com/posts/cpuprivilege/</guid>
-    <description><![CDATA[CPU resources are not equally accessible to all processes. This post tries to establish the same using inline assembly language in C program executed on a x86_64 processor.]]></description>
-</item><item>
-    <title>Parallel Processing to Reduce Processing Time</title>
-    <link>https://techiehustle.com/posts/parallelprocessing/</link>
-    <pubDate>Thu, 23 Sep 2021 22:03:58 &#43;0530</pubDate>
-    <author>Author</author>
-    <guid>https://techiehustle.com/posts/parallelprocessing/</guid>
-    <description><![CDATA[Parallel processing can be used to significantly decrease the compute time of large data sets. This post discusses about parallel processing along with implementation and examples.]]></description>
-</item><item>
-    <title>Log Routing in ECS Fargate Tasks</title>
-    <link>https://techiehustle.com/posts/logrouting/</link>
-    <pubDate>Tue, 31 Aug 2021 13:59:39 &#43;0530</pubDate>
-    <author>Author</author>
-    <guid>https://techiehustle.com/posts/logrouting/</guid>
-    <description><![CDATA[This article delves into detailed procedure of sending different logs from AWS ECS Fargate containers to different destinations using AWSFirelens container as side car.]]></description>
-</item><item>
-    <title>Website Monitoring</title>
-    <link>https://techiehustle.com/posts/web_monitor/</link>
-    <pubDate>Fri, 06 Aug 2021 13:48:07 &#43;0530</pubDate>
-    <author>Author</author>
-    <guid>https://techiehustle.com/posts/web_monitor/</guid>
-    <description><![CDATA[Monitoring website and notifying the site admin about downtime using cron job.]]></description>
-</item><item>
-    <title>Tracking Failed ECS Tasks</title>
-    <link>https://techiehustle.com/posts/ecstasktracking/</link>
-    <pubDate>Sat, 08 May 2021 19:11:54 &#43;0530</pubDate>
-    <author>Author</author>
-    <guid>https://techiehustle.com/posts/ecstasktracking/</guid>
-    <description><![CDATA[Tracking Amazon ECS task failures using Amazon EventBridge which can make it easier for Root Cause Analysis.]]></description>
-</item></channel>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TechieHustle</title>
+    <link>https://techiehustle.com/</link>
+    <description>Recent content on TechieHustle</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Tue, 04 Jan 2022 23:41:13 +0530</lastBuildDate><atom:link href="https://techiehustle.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CPUPrivilege</title>
+      <link>https://techiehustle.com/posts/cpuprivilege/</link>
+      <pubDate>Tue, 04 Jan 2022 23:41:13 +0530</pubDate>
+      
+      <guid>https://techiehustle.com/posts/cpuprivilege/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Parallel Processing to Reduce Processing Time</title>
+      <link>https://techiehustle.com/posts/parallelprocessing/</link>
+      <pubDate>Thu, 23 Sep 2021 22:03:58 +0530</pubDate>
+      
+      <guid>https://techiehustle.com/posts/parallelprocessing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Log Routing in ECS Fargate Tasks</title>
+      <link>https://techiehustle.com/posts/logrouting/</link>
+      <pubDate>Tue, 31 Aug 2021 13:59:39 +0530</pubDate>
+      
+      <guid>https://techiehustle.com/posts/logrouting/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Website Monitoring</title>
+      <link>https://techiehustle.com/posts/web_monitor/</link>
+      <pubDate>Fri, 06 Aug 2021 13:48:07 +0530</pubDate>
+      
+      <guid>https://techiehustle.com/posts/web_monitor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tracking Failed ECS Tasks</title>
+      <link>https://techiehustle.com/posts/ecstasktracking/</link>
+      <pubDate>Sat, 08 May 2021 19:11:54 +0530</pubDate>
+      
+      <guid>https://techiehustle.com/posts/ecstasktracking/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
 </rss>
