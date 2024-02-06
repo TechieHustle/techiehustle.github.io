@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-    <lastBuildDate>Tue, 04 Jan 2022 23:41:13 +0530</lastBuildDate><atom:link href="https://techiehustle.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 06 Feb 2024 16:15:43 -0500</lastBuildDate><atom:link href="https://techiehustle.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Adam Optimization</title>
+      <link>https://techiehustle.com/posts/adam-optimization/</link>
+      <pubDate>Tue, 06 Feb 2024 16:15:43 -0500</pubDate>
+      
+      <guid>https://techiehustle.com/posts/adam-optimization/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>CPUPrivilege</title>
       <link>https://techiehustle.com/posts/cpuprivilege/</link>

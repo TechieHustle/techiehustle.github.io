@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://techiehustle.com/posts/cpuprivilege/</loc>
-    <lastmod>2022-01-04T23:41:13+05:30</lastmod>
+    <loc>https://techiehustle.com/posts/adam-optimization/</loc>
+    <lastmod>2024-02-06T16:15:43-05:00</lastmod>
   </url><url>
     <loc>https://techiehustle.com/posts/</loc>
-    <lastmod>2022-01-04T23:41:13+05:30</lastmod>
+    <lastmod>2024-02-06T16:15:43-05:00</lastmod>
   </url><url>
     <loc>https://techiehustle.com/</loc>
+    <lastmod>2024-02-06T16:15:43-05:00</lastmod>
+  </url><url>
+    <loc>https://techiehustle.com/posts/cpuprivilege/</loc>
     <lastmod>2022-01-04T23:41:13+05:30</lastmod>
   </url><url>
     <loc>https://techiehustle.com/posts/parallelprocessing/</loc>
